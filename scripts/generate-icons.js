@@ -46,7 +46,6 @@ function makeCrescentPNG(size) {
   const SSAA = 4
   const S = size * SSAA
 
-  const bg = [0x0a, 0x0a, 0x0a]
   const fg = [0x7c, 0x6a, 0xf7]
 
   // Outer circle = full moon body
@@ -54,7 +53,7 @@ function makeCrescentPNG(size) {
   // Inner circle = bite taken out of the right side
   const icx = S * 0.61, icy = S * 0.48, iR = S * 0.33
 
-  const rowBytes = 1 + size * 3   // filter byte + RGB per row
+  const rowBytes = 1 + size * 4   // filter byte + RGBA per row
   const raw = Buffer.alloc(size * rowBytes)
 
   for (let py = 0; py < size; py++) {
@@ -71,10 +70,11 @@ function makeCrescentPNG(size) {
         }
       }
       const alpha = filled / (SSAA * SSAA)
-      const off = py * rowBytes + 1 + px * 3
-      raw[off]     = Math.round(bg[0] * (1 - alpha) + fg[0] * alpha)
-      raw[off + 1] = Math.round(bg[1] * (1 - alpha) + fg[1] * alpha)
-      raw[off + 2] = Math.round(bg[2] * (1 - alpha) + fg[2] * alpha)
+      const off = py * rowBytes + 1 + px * 4
+      raw[off]     = fg[0]
+      raw[off + 1] = fg[1]
+      raw[off + 2] = fg[2]
+      raw[off + 3] = Math.round(alpha * 255)  // transparent bg, purple shape
     }
   }
 
@@ -85,7 +85,7 @@ function makeCrescentPNG(size) {
   ihdr.writeUInt32BE(size, 0)
   ihdr.writeUInt32BE(size, 4)
   ihdr.writeUInt8(8, 8)  // 8 bits per channel
-  ihdr.writeUInt8(2, 9)  // RGB color type
+  ihdr.writeUInt8(6, 9)  // RGBA color type
 
   return Buffer.concat([
     sig,
