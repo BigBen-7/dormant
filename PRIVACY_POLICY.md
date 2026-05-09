@@ -47,4 +47,4 @@ If this policy is updated, the effective date above will change. Given the natur
 
 ## Contact
 
-Questions or concerns: [your-email@domain.com]
+Questions or concerns: [benardsimon7@gmail.com]
