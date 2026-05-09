@@ -49,6 +49,11 @@ export default function Popup() {
     fetchTabs()
   }
 
+  async function handleSettingsChange(updated: DormantSettings) {
+    await chrome.runtime.sendMessage({ type: 'UPDATE_SETTINGS', payload: updated })
+    fetchTabs()
+  }
+
   async function handleWhitelistToggle(domain: string, currentlyWhitelisted: boolean) {
     const newWhitelist = currentlyWhitelisted
       ? settings.whitelist.filter((d) => d !== domain)
@@ -94,7 +99,7 @@ export default function Popup() {
       </div>
 
       <div className="popup-settings-section">
-        <Settings />
+        <Settings settings={settings} onSettingsChange={handleSettingsChange} />
       </div>
     </div>
   )
