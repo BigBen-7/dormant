@@ -7,6 +7,7 @@ import { ALARM_NAME, ALARM_INTERVAL } from '../shared/constants'
 // ─── Install ────────────────────────────────────────────────────────────────
 
 chrome.runtime.onInstalled.addListener(async () => {
+  console.log('[dormant] service worker installed')
   try {
     await initDefaults()
     chrome.alarms.create(ALARM_NAME, { periodInMinutes: ALARM_INTERVAL })
@@ -19,6 +20,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== ALARM_NAME) return
+  console.log('[dormant] alarm fired', new Date().toISOString())
   try {
     const [settings, lastActiveMap] = await Promise.all([
       getSettings(),
