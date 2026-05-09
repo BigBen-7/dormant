@@ -4,8 +4,8 @@
   max-height: 600px;
   display: flex;
   flex-direction: column;
-  background: #0f0f0f;
-  color: #f0f0f0;
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
 }
 
@@ -16,14 +16,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px 12px;
-  border-bottom: 1px solid #1e1e1e;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .popup-title {
   font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: #f0f0f0;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
 }
 
 .popup-badge {
@@ -34,7 +35,7 @@
   height: 22px;
   padding: 0 7px;
   border-radius: 11px;
-  background: #6c63ff;
+  background: var(--color-accent);
   color: #fff;
   font-size: 11px;
   font-weight: 600;
@@ -48,12 +49,14 @@
   gap: 6px;
   padding: 8px 16px;
   font-size: 12px;
-  color: #888;
-  border-bottom: 1px solid #1e1e1e;
+  font-weight: 400;
+  color: var(--color-text);
+  opacity: 0.6;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .popup-stats-sep {
-  color: #444;
+  color: var(--color-text);
 }
 
 /* ── Tab list ────────────────────────────────────────────── */
@@ -76,7 +79,8 @@
 
 .popup-state-msg {
   padding: 24px 16px;
-  color: #555;
+  color: var(--color-text);
+  opacity: 0.4;
   font-size: 13px;
   text-align: center;
 }
@@ -84,5 +88,5 @@
 /* ── Settings section ────────────────────────────────────── */
 
 .popup-settings-section {
-  border-top: 1px solid #1e1e1e;
+  border-top: 1px solid var(--color-border);
 }

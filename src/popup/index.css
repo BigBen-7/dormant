@@ -1,3 +1,22 @@
+:root {
+  --color-bg: #0a0a0a;
+  --color-surface: #111111;
+  --color-hover: #1a1a1a;
+  --color-border: #1e1e1e;
+  --color-text: #e8e8e8;
+  --color-text-muted: #888888;
+  --color-accent: #7c6af7;
+
+  --badge-active-bg: #1a3a2a;
+  --badge-active-fg: #4ade80;
+  --badge-suspended-bg: #1a1a1a;
+  --badge-suspended-fg: #555555;
+  --badge-whitelisted-bg: #1e1a3a;
+  --badge-whitelisted-fg: #7c6af7;
+  --badge-idle-bg: #2a2010;
+  --badge-idle-fg: #f59e0b;
+}
+
 *,
 *::before,
 *::after {
@@ -11,11 +30,16 @@ body {
   width: 380px;
   min-height: 500px;
   overflow: hidden;
-  background: #0f0f0f;
-  color: #f0f0f0;
-  font-family: system-ui, -apple-system, 'Segoe UI', 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
+}
+
+input,
+button {
+  font-family: inherit;
 }
 
 ::-webkit-scrollbar {
