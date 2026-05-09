@@ -1,13 +1,8 @@
-import type { Settings } from '../shared/types'
-import { DEFAULT_THRESHOLD_MINUTES, DEFAULT_WHITELIST } from '../shared/constants'
+import type { DormantSettings } from '../shared/types'
+import { DEFAULT_SETTINGS } from '../shared/constants'
 
 const SETTINGS_KEY = 'settings'
 const LAST_ACTIVE_KEY = 'lastActive'
-
-const DEFAULT_SETTINGS: Settings = {
-  thresholdMinutes: DEFAULT_THRESHOLD_MINUTES,
-  whitelist: [...DEFAULT_WHITELIST],
-}
 
 // ─── Defaults ────────────────────────────────────────────────────────────────
 
@@ -24,17 +19,17 @@ export async function initDefaults(): Promise<void> {
 
 // ─── Settings (chrome.storage.sync) ──────────────────────────────────────────
 
-export async function getSettings(): Promise<Settings> {
+export async function getSettings(): Promise<DormantSettings> {
   try {
     const result = await chrome.storage.sync.get(SETTINGS_KEY)
-    return (result[SETTINGS_KEY] as Settings) ?? DEFAULT_SETTINGS
+    return (result[SETTINGS_KEY] as DormantSettings) ?? DEFAULT_SETTINGS
   } catch (err) {
     console.error('[dormant] getSettings failed:', err)
     return { ...DEFAULT_SETTINGS }
   }
 }
 
-export async function saveSettings(settings: Settings): Promise<void> {
+export async function saveSettings(settings: DormantSettings): Promise<void> {
   try {
     await chrome.storage.sync.set({ [SETTINGS_KEY]: settings })
   } catch (err) {
@@ -42,7 +37,7 @@ export async function saveSettings(settings: Settings): Promise<void> {
   }
 }
 
-export async function updateSettings(patch: Partial<Settings>): Promise<void> {
+export async function updateSettings(patch: Partial<DormantSettings>): Promise<void> {
   try {
     const current = await getSettings()
     await chrome.storage.sync.set({ [SETTINGS_KEY]: { ...current, ...patch } })
