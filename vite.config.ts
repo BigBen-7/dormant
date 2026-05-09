@@ -1,6 +1,7 @@
 import { defineConfig, build } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+import fs from 'fs'
 
 export default defineConfig({
   plugins: [
@@ -27,6 +28,30 @@ export default defineConfig({
             },
           },
         })
+      },
+    },
+    {
+      name: 'copy-extension-assets',
+      apply: 'build',
+      closeBundle() {
+        // Copy manifest.json to dist/
+        fs.copyFileSync(
+          resolve(__dirname, 'manifest.json'),
+          resolve(__dirname, 'dist/manifest.json')
+        )
+
+        // Copy icons/ to dist/icons/
+        const iconsDir = resolve(__dirname, 'icons')
+        const distIconsDir = resolve(__dirname, 'dist/icons')
+        if (fs.existsSync(iconsDir)) {
+          fs.mkdirSync(distIconsDir, { recursive: true })
+          for (const file of fs.readdirSync(iconsDir)) {
+            fs.copyFileSync(
+              resolve(iconsDir, file),
+              resolve(distIconsDir, file)
+            )
+          }
+        }
       },
     },
   ],
