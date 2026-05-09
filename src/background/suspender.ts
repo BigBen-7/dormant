@@ -1,4 +1,4 @@
-import type { Settings } from '../shared/types'
+import type { DormantSettings } from '../shared/types'
 import { SKIP_URL_SCHEMES, MB_PER_TAB } from '../shared/constants'
 
 export function getDomainFromTab(tab: chrome.tabs.Tab): string {
@@ -13,7 +13,7 @@ export function getDomainFromTab(tab: chrome.tabs.Tab): string {
 export function shouldSuspend(
   tab: chrome.tabs.Tab,
   lastActive: number,
-  settings: Settings
+  settings: DormantSettings
 ): boolean {
   if (tab.discarded) return false
   if (tab.active) return false
@@ -26,7 +26,7 @@ export function shouldSuspend(
   if (domain && settings.whitelist.some((pattern) => url.includes(pattern))) return false
 
   const idleMs = Date.now() - lastActive
-  return idleMs > settings.thresholdMinutes * 60 * 1000
+  return idleMs > settings.threshold * 60 * 1000
 }
 
 export async function suspendTab(tabId: number): Promise<void> {
@@ -38,7 +38,7 @@ export async function suspendTab(tabId: number): Promise<void> {
 }
 
 export async function evaluateAllTabs(
-  settings: Settings,
+  settings: DormantSettings,
   lastActiveMap: Record<number, number>
 ): Promise<number> {
   const tabs = await chrome.tabs.query({})
@@ -46,7 +46,6 @@ export async function evaluateAllTabs(
 
   for (const tab of tabs) {
     if (tab.id === undefined) continue
-    // Default to now so untracked tabs aren't immediately suspended
     const lastActive = lastActiveMap[tab.id] ?? Date.now()
     if (shouldSuspend(tab, lastActive, settings)) {
       await suspendTab(tab.id)

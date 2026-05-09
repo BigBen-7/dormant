@@ -1,14 +1,15 @@
 import { evaluateAllTabs } from './suspender'
+import { getDomainFromTab } from './suspender'
 import { initDefaults, getSettings, getLastActiveMap, setLastActive, updateSettings } from './storage'
-import type { DormantMessage, TabInfo } from '../shared/types'
-import { ALARM_NAME, ALARM_PERIOD_MINUTES } from '../shared/constants'
+import type { DormantMessage, DormantResponse, DormantSettings, TabInfo } from '../shared/types'
+import { ALARM_NAME, ALARM_INTERVAL } from '../shared/constants'
 
 // ─── Install ────────────────────────────────────────────────────────────────
 
 chrome.runtime.onInstalled.addListener(async () => {
   try {
     await initDefaults()
-    chrome.alarms.create(ALARM_NAME, { periodInMinutes: ALARM_PERIOD_MINUTES })
+    chrome.alarms.create(ALARM_NAME, { periodInMinutes: ALARM_INTERVAL })
   } catch (err) {
     console.error('[dormant] onInstalled failed:', err)
   }
@@ -54,23 +55,23 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
 chrome.runtime.onMessage.addListener((message: DormantMessage, _sender, sendResponse) => {
   handleMessage(message).then(sendResponse).catch((err) => {
     console.error('[dormant] message handler failed:', err)
-    sendResponse({ error: String(err) })
+    sendResponse({ success: false, error: String(err) } satisfies DormantResponse)
   })
   return true // keep channel open for async response
 })
 
-async function handleMessage(message: DormantMessage): Promise<unknown> {
+async function handleMessage(message: DormantMessage): Promise<DormantResponse> {
   switch (message.type) {
     case 'GET_TABS': {
-      const [tabs, settings] = await Promise.all([
+      const [tabs, settings, lastActiveMap] = await Promise.all([
         chrome.tabs.query({}),
         getSettings(),
+        getLastActiveMap(),
       ])
       const tabInfoList: TabInfo[] = tabs.map((tab) => {
         const url = tab.url ?? ''
-        const isWhitelisted = settings.whitelist.some((pattern) =>
-          url.includes(pattern)
-        )
+        const domain = getDomainFromTab(tab)
+        const isWhitelisted = settings.whitelist.some((pattern) => url.includes(pattern))
         const status = tab.discarded
           ? 'suspended'
           : isWhitelisted
@@ -82,28 +83,30 @@ async function handleMessage(message: DormantMessage): Promise<unknown> {
           url,
           favIconUrl: tab.favIconUrl ?? '',
           status,
+          lastActive: lastActiveMap[tab.id ?? 0] ?? 0,
+          domain,
         }
       })
-      return tabInfoList
+      return { success: true, data: tabInfoList }
     }
 
     case 'SUSPEND_TAB': {
-      await chrome.tabs.discard(message.tabId)
-      return { ok: true }
+      await chrome.tabs.discard(message.payload as number)
+      return { success: true }
     }
 
     case 'RESTORE_TAB': {
-      await chrome.tabs.reload(message.tabId)
-      return { ok: true }
+      await chrome.tabs.reload(message.payload as number)
+      return { success: true }
     }
 
     case 'UPDATE_SETTINGS': {
-      await updateSettings(message.settings)
-      return { ok: true }
+      await updateSettings(message.payload as Partial<DormantSettings>)
+      return { success: true }
     }
 
     default:
-      return { error: 'unknown message type' }
+      return { success: false, error: 'unknown message type' }
   }
 }
 

@@ -1,4 +1,4 @@
-export type TabStatus = 'active' | 'suspended' | 'whitelisted'
+export type TabStatus = 'active' | 'suspended' | 'whitelisted' | 'idle'
 
 export interface TabInfo {
   id: number
@@ -6,15 +6,24 @@ export interface TabInfo {
   url: string
   favIconUrl: string
   status: TabStatus
+  lastActive: number
+  domain: string
 }
 
-export interface Settings {
-  thresholdMinutes: number
+export interface DormantSettings {
+  threshold: number
   whitelist: string[]
 }
 
-export type DormantMessage =
-  | { type: 'GET_TABS' }
-  | { type: 'SUSPEND_TAB'; tabId: number }
-  | { type: 'RESTORE_TAB'; tabId: number }
-  | { type: 'UPDATE_SETTINGS'; settings: Partial<Settings> }
+export interface DormantMessage {
+  type: 'GET_TABS' | 'SUSPEND_TAB' | 'RESTORE_TAB' | 'UPDATE_SETTINGS'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload?: any
+}
+
+export interface DormantResponse {
+  success: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any
+  error?: string
+}
