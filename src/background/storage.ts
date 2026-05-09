@@ -22,7 +22,8 @@ export async function initDefaults(): Promise<void> {
 export async function getSettings(): Promise<DormantSettings> {
   try {
     const result = await chrome.storage.sync.get(SETTINGS_KEY)
-    return (result[SETTINGS_KEY] as DormantSettings) ?? DEFAULT_SETTINGS
+    // Merge with defaults so missing fields (e.g. from an older schema) are filled in
+    return { ...DEFAULT_SETTINGS, ...(result[SETTINGS_KEY] as Partial<DormantSettings> ?? {}) }
   } catch (err) {
     console.error('[dormant] getSettings failed:', err)
     return { ...DEFAULT_SETTINGS }
