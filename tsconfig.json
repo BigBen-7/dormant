@@ -6,7 +6,7 @@
     "jsx": "react-jsx",
     "strict": true,
     "lib": ["ES2020", "DOM"],
-    "types": ["chrome"],
+    "types": ["chrome", "node"],
 "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true

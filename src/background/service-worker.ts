@@ -87,7 +87,7 @@ async function handleMessage(message: DormantMessage): Promise<DormantResponse> 
           domain,
         }
       })
-      return { success: true, data: tabInfoList }
+      return { success: true, data: { tabs: tabInfoList, settings } }
     }
 
     case 'SUSPEND_TAB': {
