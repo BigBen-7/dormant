@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Dormant</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #ffffff;
+      padding: 48px 24px;
+    }
+    .wrap { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+    .effective { font-size: 14px; color: #666; margin-bottom: 40px; }
+    h2 { font-size: 18px; font-weight: 600; margin: 36px 0 12px; }
+    p { margin-bottom: 16px; }
+    ul { padding-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 14px; border: 1px solid #e0e0e0; }
+    th { background: #f5f5f5; font-weight: 600; }
+    a { color: #5b4fdb; }
+    .none-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-weight: 500;
+      color: #15803d;
+      margin-bottom: 32px;
+    }
+    footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #e0e0e0; font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Privacy Policy</h1>
+    <p class="effective">Dormant Chrome Extension &mdash; Effective date: 2026-05-09</p>
+
+    <div class="none-banner">
+      Dormant does not collect, transmit, or share any personal data. No information ever leaves your browser.
+    </div>
+
+    <h2>Overview</h2>
+    <p>Dormant is a Chrome extension that auto-suspends inactive browser tabs to save RAM. This policy explains what data the extension touches, where it stays, and what it never does.</p>
+
+    <h2>Data collected</h2>
+    <p><strong>None.</strong> Dormant makes no network requests and sends nothing to any external server.</p>
+
+    <h2>Data stored locally</h2>
+    <p>Dormant stores the following data in your browser using Chrome's built-in <code>chrome.storage</code> API:</p>
+    <table>
+      <thead>
+        <tr><th>Data</th><th>Where</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Last-active timestamps</td>
+          <td><code>chrome.storage.local</code></td>
+          <td>Track when each tab was last used so the inactivity check works correctly</td>
+        </tr>
+        <tr>
+          <td>Whitelist domains</td>
+          <td><code>chrome.storage.sync</code></td>
+          <td>Remember which sites you've chosen to never suspend</td>
+        </tr>
+        <tr>
+          <td>Inactivity threshold</td>
+          <td><code>chrome.storage.sync</code></td>
+          <td>Remember your preferred suspension delay (in minutes)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><code>chrome.storage.sync</code> data may be synced across your Chrome profile by Google's existing browser sync — this is standard Chrome behaviour controlled entirely by your own Google account settings.</p>
+
+    <h2>What Dormant does not do</h2>
+    <ul>
+      <li>Does not make any network requests</li>
+      <li>Does not communicate with external servers</li>
+      <li>Does not use analytics, crash reporting, or telemetry</li>
+      <li>Does not store browsing history or page content</li>
+      <li>Does not require an account or login</li>
+      <li>Does not include any third-party code with its own data practices</li>
+    </ul>
+
+    <h2>Third-party services</h2>
+    <p>None. Dormant has zero external runtime dependencies.</p>
+
+    <h2>Open source</h2>
+    <p>Dormant's full source code is publicly available at <a href="https://github.com/BigBen-7/dormant">github.com/BigBen-7/dormant</a>. You can audit exactly what the extension does.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>If this policy is updated, the effective date at the top of this page will change. Given the nature of the extension (no data collection), meaningful changes are unlikely.</p>
+
+    <h2>Contact</h2>
+    <p>Questions or concerns: <a href="mailto:your-email@domain.com">your-email@domain.com</a></p>
+
+    <footer>
+      &copy; 2026 Dormant. This policy is also available as <a href="https://github.com/BigBen-7/dormant/blob/main/PRIVACY_POLICY.md">Markdown on GitHub</a>.
+    </footer>
+  </div>
+</body>
+</html>

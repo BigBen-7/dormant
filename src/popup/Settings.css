@@ -1,6 +1,6 @@
 .settings {
   padding: 12px 14px 16px;
-  background: #0f0f0f;
+  background: var(--color-bg);
 }
 
 /* ── Header ──────────────────────────────────────────────── */
@@ -14,7 +14,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #555;
+  color: var(--color-text-muted);
 }
 
 /* ── Row wrapper ─────────────────────────────────────────── */
@@ -30,12 +30,13 @@
 .settings-label {
   display: block;
   font-size: 12px;
-  color: #aaa;
+  font-weight: 400;
+  color: var(--color-text-muted);
   margin-bottom: 8px;
 }
 
 .settings-threshold-value {
-  color: #f0f0f0;
+  color: var(--color-text);
   font-weight: 600;
 }
 
@@ -50,7 +51,7 @@
   border-radius: 2px;
   outline: none;
   cursor: pointer;
-  accent-color: #6c63ff;
+  accent-color: var(--color-accent);
 }
 
 .settings-slider::-webkit-slider-thumb {
@@ -58,7 +59,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #6c63ff;
+  background: var(--color-accent);
   cursor: pointer;
   transition: transform 0.1s ease;
 }
@@ -72,7 +73,7 @@
   height: 14px;
   border: none;
   border-radius: 50%;
-  background: #6c63ff;
+  background: var(--color-accent);
   cursor: pointer;
 }
 
@@ -81,7 +82,9 @@
   justify-content: space-between;
   margin-top: 4px;
   font-size: 10px;
-  color: #444;
+  font-weight: 400;
+  color: var(--color-text);
+  opacity: 0.4;
 }
 
 /* ── Whitelist list ──────────────────────────────────────── */
@@ -93,7 +96,9 @@
 
 .whitelist-empty {
   font-size: 11px;
-  color: #444;
+  font-weight: 400;
+  color: var(--color-text);
+  opacity: 0.4;
   padding: 4px 0;
 }
 
@@ -103,14 +108,14 @@
   justify-content: space-between;
   padding: 5px 8px;
   margin-bottom: 3px;
-  background: #1a1a1a;
+  background: var(--color-surface);
   border-radius: 5px;
-  border: 1px solid #222;
+  border: 1px solid var(--color-border);
 }
 
 .whitelist-domain {
   font-size: 12px;
-  color: #ccc;
+  color: var(--color-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -120,7 +125,7 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  color: #555;
+  color: var(--color-text-muted);
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
@@ -142,21 +147,22 @@
 .whitelist-input {
   flex: 1;
   padding: 6px 10px;
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: var(--color-surface);
+  border: 1px solid #2a2a2a;
   border-radius: 5px;
-  color: #f0f0f0;
+  color: var(--color-text);
   font-size: 12px;
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .whitelist-input::placeholder {
-  color: #444;
+  color: var(--color-text-muted);
+  opacity: 0.6;
 }
 
 .whitelist-input:focus {
-  border-color: #6c63ff;
+  border-color: var(--color-accent);
 }
 
 .whitelist-input.has-error {
@@ -171,19 +177,18 @@
 
 .whitelist-add-btn {
   padding: 6px 12px;
-  background: #1e1a3a;
-  border: 1px solid #6c63ff44;
+  background: var(--color-accent);
+  border: none;
   border-radius: 5px;
-  color: #a78bfa;
+  color: #fff;
   font-size: 12px;
   cursor: pointer;
-  transition: background 0.1s ease, border-color 0.1s ease;
+  transition: opacity 0.1s ease;
   white-space: nowrap;
 }
 
 .whitelist-add-btn:hover {
-  background: #2a2050;
-  border-color: #6c63ff;
+  opacity: 0.85;
 }
 
 /* ── Suspend All ─────────────────────────────────────────── */
@@ -191,17 +196,17 @@
 .suspend-all-btn {
   width: 100%;
   padding: 8px 0;
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: transparent;
+  border: 1px solid #2a2a2a;
   border-radius: 6px;
-  color: #aaa;
+  color: var(--color-text-muted);
   font-size: 12px;
   cursor: pointer;
   transition: background 0.1s ease, border-color 0.1s ease, color 0.1s ease;
 }
 
 .suspend-all-btn:hover {
-  background: #222;
+  background: var(--color-surface);
   border-color: #555;
-  color: #f0f0f0;
+  color: var(--color-text);
 }

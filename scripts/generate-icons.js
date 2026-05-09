@@ -1,4 +1,4 @@
-// Generates solid-color PNG icons for the extension using only Node built-ins.
+// Generates crescent moon + "z" PNG icons using only Node built-ins (SSAA anti-aliasing).
 const zlib = require('zlib')
 const fs = require('fs')
 const path = require('path')
@@ -23,27 +23,73 @@ function makeChunk(type, data) {
   return Buffer.concat([len, typeBytes, data, crcBytes])
 }
 
-function makePNG(size, r, g, b) {
-  const sig = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+function distToSegment(px, py, ax, ay, bx, by) {
+  const dx = bx - ax, dy = by - ay
+  const lenSq = dx * dx + dy * dy
+  if (lenSq === 0) return Math.hypot(px - ax, py - ay)
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq))
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy))
+}
 
-  const ihdrData = Buffer.alloc(13)
-  ihdrData.writeUInt32BE(size, 0)
-  ihdrData.writeUInt32BE(size, 4)
-  ihdrData.writeUInt8(8, 8)  // 8 bits per channel
-  ihdrData.writeUInt8(2, 9)  // RGB color type
+// Returns true if (x, y) is inside the "z" glyph defined over a [0, S) grid.
+function inZ(x, y, S) {
+  const x0 = S * 0.60, x1 = S * 0.88
+  const y0 = S * 0.08, y1 = S * 0.37
+  const th = S * 0.09
+  if (x < x0 || x > x1 || y < y0 || y > y1) return false
+  if (y <= y0 + th) return true                                           // top bar
+  if (y >= y1 - th) return true                                           // bottom bar
+  return distToSegment(x, y, x1, y0 + th * 0.5, x0, y1 - th * 0.5) <= th * 0.55  // diagonal
+}
 
-  const row = Buffer.alloc(1 + size * 3) // filter byte + RGB pixels per row
-  for (let x = 0; x < size; x++) {
-    row[1 + x * 3] = r
-    row[2 + x * 3] = g
-    row[3 + x * 3] = b
+function makeCrescentPNG(size) {
+  const SSAA = 4
+  const S = size * SSAA
+
+  const fg = [0x7c, 0x6a, 0xf7]
+
+  // Outer circle = full moon body
+  const ocx = S * 0.42, ocy = S * 0.54, oR = S * 0.40
+  // Inner circle = bite taken out of the right side
+  const icx = S * 0.61, icy = S * 0.48, iR = S * 0.33
+
+  const rowBytes = 1 + size * 4   // filter byte + RGBA per row
+  const raw = Buffer.alloc(size * rowBytes)
+
+  for (let py = 0; py < size; py++) {
+    raw[py * rowBytes] = 0  // PNG filter byte (None)
+    for (let px = 0; px < size; px++) {
+      let filled = 0
+      for (let sy = 0; sy < SSAA; sy++) {
+        for (let sx = 0; sx < SSAA; sx++) {
+          const x = px * SSAA + sx + 0.5
+          const y = py * SSAA + sy + 0.5
+          const inOuter = (x - ocx) ** 2 + (y - ocy) ** 2 <= oR * oR
+          const inBite  = (x - icx) ** 2 + (y - icy) ** 2 <= iR * iR
+          if ((inOuter && !inBite) || inZ(x, y, S)) filled++
+        }
+      }
+      const alpha = filled / (SSAA * SSAA)
+      const off = py * rowBytes + 1 + px * 4
+      raw[off]     = fg[0]
+      raw[off + 1] = fg[1]
+      raw[off + 2] = fg[2]
+      raw[off + 3] = Math.round(alpha * 255)  // transparent bg, purple shape
+    }
   }
-  const raw = Buffer.concat(Array.from({ length: size }, () => row))
+
   const compressed = zlib.deflateSync(raw)
+
+  const sig = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+  const ihdr = Buffer.alloc(13)
+  ihdr.writeUInt32BE(size, 0)
+  ihdr.writeUInt32BE(size, 4)
+  ihdr.writeUInt8(8, 8)  // 8 bits per channel
+  ihdr.writeUInt8(6, 9)  // RGBA color type
 
   return Buffer.concat([
     sig,
-    makeChunk('IHDR', ihdrData),
+    makeChunk('IHDR', ihdr),
     makeChunk('IDAT', compressed),
     makeChunk('IEND', Buffer.alloc(0)),
   ])
@@ -52,11 +98,8 @@ function makePNG(size, r, g, b) {
 const iconsDir = path.join(__dirname, '../icons')
 fs.mkdirSync(iconsDir, { recursive: true })
 
-// Dormant accent: #6c63ff
-const [r, g, b] = [0x6c, 0x63, 0xff]
-
 for (const size of [16, 48, 128]) {
   const out = path.join(iconsDir, `icon${size}.png`)
-  fs.writeFileSync(out, makePNG(size, r, g, b))
+  fs.writeFileSync(out, makeCrescentPNG(size))
   console.log(`created ${out}`)
 }
