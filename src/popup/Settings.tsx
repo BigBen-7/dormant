@@ -1,1 +1,3 @@
-// Settings panel component
+export default function Settings() {
+  return null
+}
